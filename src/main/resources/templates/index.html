@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:switch="${loggedin}">
+    <div th:case="false"><div th:replace="index/welcome :: div"></div></div>
+    <div th:case="true"><div th:replace="index/home :: div"></div> </div>
+</div>
+</body>
+</html>

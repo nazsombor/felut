@@ -1,0 +1,27 @@
+<div>
+    <h1>Üdv Félúton!</h1>
+    <p>Osszuk meg egymással élményeinket és gondolatainkat az utunkon.</p>
+
+    <form th:action="@{/login}" th:method="POST">
+        <label for="username2">Email cím</label>
+        <input type="email" name="username" id="username2">
+        </br>
+        <label for="password2">Jelszó</label>
+        <input type="password" name="password" id="password2">
+        </br>
+        <input type="submit" value="Belépés">
+    </form>
+
+    <form th:action="@{/registration}" th:method="POST">
+        <label for="fullname">Teljes név</label>
+        <input type="text" name="fullname" id="fullname"/>
+        </br>
+        <label for="username">Email cím</label>
+        <input type="email" name="username" id="username"/>
+        </br>
+        <label for="password">Jelszó</label>
+        <input type="password" name="password" id="password"/>
+        </br>
+        <input type="submit" value="Regisztráció"/>
+    </form>
+</div>
