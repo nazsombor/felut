@@ -12,10 +12,8 @@ public class SiteController {
 
 
     @GetMapping("/")
-    public String home(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getPrincipal());
-        if ((User.class.isInstance(authentication.getPrincipal())) && authentication.isAuthenticated()) {
+    public String home(Model model) {;
+        if (User.class.isInstance(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
             model.addAttribute("loggedin", true);
         } else {
             model.addAttribute("loggedin", false);
@@ -25,8 +23,7 @@ public class SiteController {
 
     @GetMapping("/logout")
     public String logout(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        authentication.setAuthenticated(false);
+        SecurityContextHolder.getContext().setAuthentication(null);
         return "redirect:/";
     }
 }

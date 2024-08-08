@@ -37,10 +37,6 @@ public class SecurityConfiguration {
                 response.sendRedirect("/");
             });
         });
-        http.logout(logout -> {
-            logout.logoutUrl("/logout").permitAll();
-            logout.logoutSuccessUrl("/");
-        });
 
         return http.build();
     }
