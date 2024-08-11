@@ -1,3 +1,18 @@
 <div>
-    <p>Home</p>
+    <div style="display: flex">
+        <div>
+        <textarea cols="80" rows="10" id="new_post"># Cím
+## Alcímek
+Szöveg</textarea>
+            </br>
+            <input type="file" id="images" accept="image/jpeg, image/png" multiple/>
+            <ul id="image_list">
+
+            </ul>
+        </div>
+        <div id="markdown">
+        </div>
+    </div>
+    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+    <script src="/js/new_post.js"></script>
 </div>

@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 public class FelutApplication {
 
     public static void main(String[] args) {
-        System.out.println("test");
         SpringApplication.run(FelutApplication.class, args);
     }
 

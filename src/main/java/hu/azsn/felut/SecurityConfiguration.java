@@ -29,6 +29,9 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers("/").permitAll();
             authorize.requestMatchers("/logout").permitAll();
+            authorize.requestMatchers("/js/**").permitAll();
+            authorize.requestMatchers("/css/**").permitAll();
+            authorize.requestMatchers("/images/**").permitAll();
         });
         http.formLogin(login -> {
             login.loginPage("/");
