@@ -15,6 +15,7 @@ textarea.addEventListener("input", function (event) {
 
         let split = link.href.split("/")
         let name = split[split.length - 1]
+        link.href = "#"
         for (let image of imagesDto) {
             if (name == image.name) {
                 let i = document.createElement("img");
@@ -45,15 +46,18 @@ images.addEventListener("change", function (event) {
             li.append(span)
             imageList.append(li)
             image.src = event.target.result;
-            image.width = 100
-            span.innerText= file.name;
+            image.width = 50
+            let truncatedName = file.name.split(/\s/)
+            truncatedName = truncatedName.join("")
+
+            span.innerText = truncatedName;
 
             imagesDto.push({
                 src: event.target.result,
-                name: file.name
+                name: truncatedName
             })
 
-            textarea.value += "\n[test](" + file.name + ")"
+            textarea.value += "\n[](" + truncatedName + ")"
             textarea.dispatchEvent(new Event("input"));
         }
         reader.readAsDataURL(file)
