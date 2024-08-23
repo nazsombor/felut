@@ -2,7 +2,10 @@ let textarea = document.getElementById("new_post")
 let markdown = document.getElementById("markdown")
 let images = document.getElementById("images")
 let imageList = document.getElementById("image_list")
+const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 let imagesDto = []
+let test = document.getElementById("test")
 
 textarea.addEventListener("input", function (event) {
     var converter = new showdown.Converter(),
@@ -62,4 +65,47 @@ images.addEventListener("change", function (event) {
         }
         reader.readAsDataURL(file)
     }
+})
+
+document.getElementById('post_button').addEventListener('click', function () {
+
+    const markdownTextarea = document.getElementById('new_post');
+    const imagesInput = document.getElementById('images');
+    const formData = new FormData();
+
+    formData.append('post', markdownTextarea.value);
+
+    for (let i = 0; i < imagesInput.files.length; i++) {
+        formData.append('file', imagesInput.files[i]);
+    }
+
+    fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+            [csrfHeader]: csrfToken,
+        },
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            alert('Post uploaded successfully');
+        } else {
+            alert('Failed to upload post');
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+        alert('Error uploading post');
+    });
+});
+
+test.addEventListener("click", function (event) {
+
+    fetch('/api/posts', {
+        method: 'GET',
+        headers: {
+            [csrfHeader]: csrfToken,
+        }
+    }).then(response => response.json()).then(response => {
+        console.log(response)
+
+    })
 })

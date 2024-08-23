@@ -1,6 +1,5 @@
-package hu.azsn.felut;
+package hu.azsn.felut.controller;
 
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -12,7 +11,7 @@ public class SiteController {
 
 
     @GetMapping("/")
-    public String home(Model model) {;
+    public String home(Model model) {
         if (User.class.isInstance(SecurityContextHolder.getContext().getAuthentication().getPrincipal())) {
             model.addAttribute("loggedin", true);
         } else {
