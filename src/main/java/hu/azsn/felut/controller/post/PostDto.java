@@ -8,4 +8,5 @@ import java.util.List;
 public class PostDto {
     String text;
     List<String> images;
+    List<String> imageNames;
 }

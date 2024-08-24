@@ -43,11 +43,14 @@ public class PostController {
             PostDto dto = new PostDto();
             dto.setText(post.getText());
             ArrayList<String> images = new ArrayList<>();
+            ArrayList<String> imageNames = new ArrayList<>();
             for (Image image : post.getImages()) {
                 String base64 = Base64.getEncoder().encodeToString(image.getData());
                 images.add(base64);
+                imageNames.add(image.getName());
             }
             dto.setImages(images);
+            dto.setImageNames(imageNames);
             dtos.add(dto);
         }
 
@@ -60,11 +63,14 @@ public class PostController {
         Post post = new Post();
         post.setText(pu.getPostText());
 
+        int i = 0;
+
         ArrayList<Image> images = new ArrayList<>();
         for (MultipartFile multipartFile : pu.getFile()) {
             Image image = new Image();
             image.setData(multipartFile.getBytes());
             image.setPost(post);
+            image.setName(pu.getImageNames().get(i++));
             images.add(image);
         }
 

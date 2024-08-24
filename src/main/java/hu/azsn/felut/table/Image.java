@@ -13,6 +13,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @Column(length = 5 * 1024 * 1024)
     @Lob
     private byte[] data;

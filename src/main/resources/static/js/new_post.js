@@ -11,24 +11,36 @@ textarea.addEventListener("input", function (event) {
     var converter = new showdown.Converter(),
         text      = event.target.value,
         html      = converter.makeHtml(text);
-    markdown.innerHTML = html;
+    var parts = html.split(/<a.*<\/a>/)
+    var _imageNames = html.split(/.*href="/)
+    var imageNames = []
+    var fullPost = ""
 
-    let links = markdown.getElementsByTagName("a");
-    for (let link of links) {
+    for (let i = 1; i < _imageNames.length; i++) {
+        imageNames.push(_imageNames[i].split(/"><\/a>/)[0])
+    }
 
-        let split = link.href.split("/")
-        let name = split[split.length - 1]
-        link.href = "#"
+    var i = 0;
+    for (; i < imageNames.length; i++) {
+        fullPost += parts[i]
+        fullPost += "<img alt='" + imageNames[i] + "'></img>"
+    }
+    fullPost += parts[i]
+    markdown.innerHTML = fullPost
+
+    let imgs = markdown.getElementsByTagName("img")
+    console.log(imgs)
+    for (let img of imgs) {
+
         for (let image of imagesDto) {
-            if (name == image.name) {
-                let i = document.createElement("img");
-                link.append(i)
-                i.src = image.src;
-                i.width = 400
-                console.log(image.name)
+            if (img.alt == image.name) {
+                img.src = image.src;
+                img.width = 400
             }
         }
     }
+
+    console.log()
 
 })
 textarea.addEventListener("click", function (event) {
@@ -57,7 +69,8 @@ images.addEventListener("change", function (event) {
 
             imagesDto.push({
                 src: event.target.result,
-                name: truncatedName
+                name: truncatedName,
+                file: file
             })
 
             textarea.value += "\n[](" + truncatedName + ")"
@@ -70,13 +83,15 @@ images.addEventListener("change", function (event) {
 document.getElementById('post_button').addEventListener('click', function () {
 
     const markdownTextarea = document.getElementById('new_post');
-    const imagesInput = document.getElementById('images');
     const formData = new FormData();
 
-    formData.append('post', markdownTextarea.value);
+    formData.append('postText', markdownTextarea.value);
 
-    for (let i = 0; i < imagesInput.files.length; i++) {
-        formData.append('file', imagesInput.files[i]);
+    for (let i = 0; i < imagesDto.length; i++) {
+        formData.append('file', imagesDto[i].file);
+    }
+    for (let i = 0; i < imagesDto.length; i++) {
+        formData.append('imageNames', imagesDto[i].name);
     }
 
     fetch('/api/posts', {
