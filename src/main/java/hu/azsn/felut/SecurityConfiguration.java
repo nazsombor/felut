@@ -92,7 +92,8 @@ public class SecurityConfiguration implements WebMvcConfigurer {
             authorize.requestMatchers("/js/**").permitAll();
             authorize.requestMatchers("/css/**").permitAll();
             authorize.requestMatchers("/images/**").permitAll();
-            authorize.requestMatchers("/api/posts").authenticated();
+            authorize.requestMatchers("/posts/**").authenticated();
+            authorize.requestMatchers("/kep/**").authenticated();
         });
         http.formLogin(login -> {
             login.loginPage("/");

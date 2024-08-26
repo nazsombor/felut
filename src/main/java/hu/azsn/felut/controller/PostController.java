@@ -2,6 +2,7 @@ package hu.azsn.felut.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.azsn.felut.controller.post.ImageUpload;
 import hu.azsn.felut.controller.post.PostDto;
 import hu.azsn.felut.controller.post.PostUpload;
 import hu.azsn.felut.repository.ImageRepository;
@@ -21,7 +22,6 @@ import java.util.Base64;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
@@ -30,10 +30,7 @@ public class PostController {
     @Autowired
     private ImageRepository imageRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @GetMapping
+    @GetMapping("/posts")
     public List<PostDto> getAllPosts() {
 
         List<Post> all = postRepository.findAll();
@@ -42,76 +39,67 @@ public class PostController {
         for (Post post : all) {
             PostDto dto = new PostDto();
             dto.setText(post.getText());
-            ArrayList<String> images = new ArrayList<>();
-            ArrayList<String> imageNames = new ArrayList<>();
-            for (Image image : post.getImages()) {
-                String base64 = Base64.getEncoder().encodeToString(image.getData());
-                images.add(base64);
-                imageNames.add(image.getName());
-            }
-            dto.setImages(images);
-            dto.setImageNames(imageNames);
             dtos.add(dto);
         }
-
 
         return dtos;
     }
 
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public Post createPost(@ModelAttribute PostUpload pu) throws IOException {
+    @GetMapping("/posts/create-new")
+    public ResponseEntity<Long> createPost() {
         Post post = new Post();
-        post.setText(pu.getPostText());
+        post.setIsPublished(false);
+        postRepository.save(post);
+        return ResponseEntity.ok().body(post.getId());
+    }
+
+    @PostMapping(path="posts/upload-images/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<List<String>> createPost(@PathVariable Long id, @ModelAttribute ImageUpload body) throws IOException {
+
+        Post post = postRepository.findById(id).get();
 
         int i = 0;
-
-        ArrayList<Image> images = new ArrayList<>();
-        for (MultipartFile multipartFile : pu.getFile()) {
+        for (MultipartFile multipartFile : body.getImages()) {
             Image image = new Image();
             image.setData(multipartFile.getBytes());
             image.setPost(post);
-            image.setName(pu.getImageNames().get(i++));
-            images.add(image);
+            image.setType(body.getTypes().get(i));
+            image.setSize(Integer.parseInt(body.getSizes().get(i)));
+            imageRepository.save(image);
+            i++;
         }
 
-        post.setImages(images);
+        post = postRepository.findById(id).get();
 
-        return postRepository.save(post);
-    }
-
-    @PostMapping
-    public Post createPost(@RequestPart("test") String postJson, @RequestPart("test2") String post2) {
-        Post post = null;
-        try {
-            post = objectMapper.readValue(postJson, Post.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        ArrayList<String> urls = new ArrayList<>();
+        for (Image image : post.getImages()) {
+            urls.add("/kep/" + image.getId().toString());
         }
-        System.out.println(post);
-        System.out.println(post2);
-        return null;
+
+        return ResponseEntity.ok().body(urls);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-        return postRepository.findById(id)
-                .map(post -> ResponseEntity.ok().body(post))
-                .orElse(ResponseEntity.notFound().build());
+    @PostMapping(path="posts/upload-post/{id}")
+    public ResponseEntity<Void> createPost(@PathVariable Long id, @RequestBody String body) throws JsonProcessingException {
+        Post post = postRepository.findById(id).get();
+        post.setText(body);
+        post.setIsPublished(true);
+        postRepository.save(post);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("posts/{id}")
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody Post postDetails) {
         return postRepository.findById(id)
                 .map(post -> {
                     post.setText(postDetails.getText());
-                    post.setImages(postDetails.getImages());
                     Post updatedPost = postRepository.save(post);
                     return ResponseEntity.ok().body(updatedPost);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("posts/{id}")
     public ResponseEntity<Object> deletePost(@PathVariable Long id) {
         return postRepository.findById(id)
                 .map(post -> {
@@ -121,10 +109,9 @@ public class PostController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{postId}/images/{imageId}")
-    public ResponseEntity<byte[]> getImage(@PathVariable Long postId, @PathVariable Long imageId) {
+    @GetMapping("kep/{imageId}")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long imageId) {
         return imageRepository.findById(imageId)
-                .filter(image -> image.getPost().getId().equals(postId))
                 .map(image -> ResponseEntity.ok()
                         .contentType(MediaType.IMAGE_JPEG)
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"image.jpg\"")

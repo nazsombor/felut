@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class PostUpload {
-    String postText;
-    List<String> imageNames;
-    List<MultipartFile> file;
+    List<String> imagemeta;
+    List<MultipartFile> images;
 }

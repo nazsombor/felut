@@ -1,22 +1,54 @@
 <div>
-    <div style="display: flex">
+    <div class="root">
         <div>
-        <textarea cols="80" rows="10" id="new_post"># Cím
-## Alcímek
-Szöveg</textarea>
-            </br>
-            <input type="file" id="images" accept="image/jpeg, image/png" multiple/>
-            <ul id="image_list">
-            </ul>
+            <div class="new_post">
+                <div>
+                    <label for="new_post"><a href="https://www.markdownguide.org/basic-syntax/">Markup útmutató</a></label>
+                    </br>
+                    <textarea cols="80" rows="10" id="new_post"></textarea>
+                    </br>
+                    <label for="images">Képek csatolása</label>
+                    </br>
+                    <input type="file" id="images" accept="image/jpeg, image/png" multiple value="Képek"/>
+                    <ul id="image_list">
+                    </ul>
 
-            <button id="post_button">Post</button>
-            <button id="test">Test</button>
-        </div>
-        <div id="markdown">
+                </div>
+                <label for="markdown">Itt láthatod formázottan a posztodat.</label>
+                <hr>
+                <div id="markdown">
+                </div>
+                <hr>
+                <label for="post_button">Ha leellenőrizted a posztodat, oszd meg.</label>
+                </br>
+                <button id="post_button">Megosztás</button>
+                <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+                <script src="/js/new_post.js"></script>
+            </div>
+            <div id="posts"></div>
+            <script src="/js/load_post.js"></script>
         </div>
     </div>
-    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
-    <script src="/js/new_post.js"></script>
-    <div id="posts"></div>
-    <script src="/js/load_post.js"></script>
+
+    <style>
+        .root {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .new_post {
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            border-color: #aaa;
+            padding: 10px;
+        }
+        label {
+            padding: 20px;
+            display: inline-block;
+            background-color: #f2f2f2;
+            margin: 10px;
+            margin-left: 0px;
+        }
+    </style>
 </div>
