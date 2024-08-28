@@ -3,23 +3,20 @@
         <div>
             <div class="new_post">
                 <div>
-                    <label for="new_post"><a href="https://www.markdownguide.org/basic-syntax/">Markup útmutató</a></label>
+                    <label for="new_post"><a href="https://www.markdownguide.org/basic-syntax/" target="_blank">Markup útmutató</a></label>
                     </br>
                     <textarea cols="80" rows="10" id="new_post"></textarea>
                     </br>
                     <label for="images">Képek csatolása</label>
                     </br>
                     <input type="file" id="images" accept="image/jpeg, image/png" multiple value="Képek"/>
-                    <ul id="image_list">
-                    </ul>
-
                 </div>
                 <label for="markdown">Itt láthatod formázottan a posztodat.</label>
                 <hr>
                 <div id="markdown">
                 </div>
                 <hr>
-                <label for="post_button">Ha leellenőrizted a posztodat, oszd meg.</label>
+                <label for="post_button">Ha minden rendben, megoszthatod.</label>
                 </br>
                 <button id="post_button">Megosztás</button>
                 <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
@@ -44,9 +41,9 @@
             padding: 10px;
         }
         label {
-            padding: 20px;
+            /*padding: 20px;*/
             display: inline-block;
-            background-color: #f2f2f2;
+            /*background-color: #f2f2f2;*/
             margin: 10px;
             margin-left: 0px;
         }

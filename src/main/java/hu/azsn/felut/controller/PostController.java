@@ -112,10 +112,23 @@ public class PostController {
     @GetMapping("kep/{imageId}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long imageId) {
         return imageRepository.findById(imageId)
-                .map(image -> ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"image.jpg\"")
-                        .body(image.getData()))
+                .map(image -> {
+                    String filename = "";
+                    MediaType type = MediaType.parseMediaType(image.getType());
+                    filename += image.getId().toString();
+                    switch (image.getType()) {
+                        case "image/jpeg":
+                            filename += ".jpg";
+                            break;
+                        case "image/png":
+                            filename += ".png";
+                            break;
+                    }
+                    return ResponseEntity.ok()
+                            .contentType(type)
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                            .body(image.getData());
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }

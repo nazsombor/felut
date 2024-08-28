@@ -5,7 +5,6 @@ let textarea = document.getElementById("new_post")
 let markdown = document.getElementById("markdown")
 let images = document.getElementById("images")
 let post_button = document.getElementById('post_button')
-let imageList = document.getElementById("image_list")
 
 let new_post_id = null
 
@@ -14,12 +13,6 @@ textarea.addEventListener("input", function (event) {
         text      = event.target.value,
         html      = converter.makeHtml(text);
     markdown.innerHTML = html
-})
-textarea.addEventListener("click", function (event) {
-    textarea.rows = 30;
-})
-textarea.addEventListener("focusout", function (event) {
-    textarea.rows = 10;
 })
 
 textarea.dispatchEvent(new Event("input"));
@@ -67,21 +60,35 @@ post_button.addEventListener('click', function () {
 
     const markdownTextarea = document.getElementById('new_post');
 
-    fetch('/posts/upload-post/' + new_post_id, {
-        method: 'POST',
-        headers: {
-            [csrfHeader]: csrfToken,
-        },
-        body: markdownTextarea.value
-    }).then(response => {
-        if (response.ok) {
-            new_post_id = null;
-            markdownTextarea.value = '';
-        } else {
-            alert('Failed to upload post');
-        }
-    }).catch(error => {
-        console.error('Error:', error);
-        alert('Error uploading post');
-    });
+    function f() {
+        fetch('/posts/upload-post/' + new_post_id, {
+            method: 'POST',
+            headers: {
+                [csrfHeader]: csrfToken,
+            },
+            body: markdownTextarea.value
+        }).then(response => {
+            if (response.ok) {
+                new_post_id = null;
+                markdownTextarea.value = '';
+                markdownTextarea.dispatchEvent(new Event("input"));
+            } else {
+                alert('Failed to upload post');
+            }
+        });
+    }
+
+    if (new_post_id) {
+        f()
+    } else {
+        fetch("posts/create-new", {
+            headers: {
+                [csrfHeader]: csrfToken,
+            }
+        }).then((response) => response.text()).then((id) => {
+            new_post_id = id
+            f()
+        })
+    }
+
 });
