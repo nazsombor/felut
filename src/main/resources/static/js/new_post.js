@@ -15,8 +15,6 @@ textarea.addEventListener("input", function (event) {
     markdown.innerHTML = html
 })
 
-textarea.dispatchEvent(new Event("input"));
-
 images.addEventListener("change", function (event) {
     const form_data = new FormData();
     for (let file of event.target.files) {

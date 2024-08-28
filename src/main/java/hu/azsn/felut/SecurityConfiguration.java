@@ -91,7 +91,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
             authorize.requestMatchers("/logout").permitAll();
             authorize.requestMatchers("/js/**").permitAll();
             authorize.requestMatchers("/css/**").permitAll();
-            authorize.requestMatchers("/images/**").permitAll();
+            authorize.requestMatchers("/image/**").permitAll();
             authorize.requestMatchers("/posts/**").authenticated();
             authorize.requestMatchers("/kep/**").authenticated();
         });
